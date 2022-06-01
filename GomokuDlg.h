@@ -25,6 +25,7 @@ class CGomokuDlg : public CDialogEx
 	int Trans_Data(int Data_1);
 	bool Text_Display=false;
 	bool mute;
+	bool Online_Enabled = false;
 // Construction
 public:
 	CGomokuDlg(CWnd* pParent = nullptr);	// standard constructor

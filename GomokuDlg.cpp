@@ -235,6 +235,12 @@ void CGomokuDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	{
 		KillTimer(4);
 		Online_State = false;
+		if (Online_Enabled == true)
+		{
+			KillTimer(3);
+			Trans_Data(2);
+		}
+		Online_Enabled = false;
 		return;
 	}
 	if (About(point.x, point.y))
@@ -357,11 +363,17 @@ void CGomokuDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	if ((point.x >= 30 && point.y >= 500) && (point.x <= 205 && point.y <= 550))
 	{
+		if (Online_Enabled == true)
+		{
+			AfxMessageBox(_T("您已进入在线模式，请等待对手加入对局。"));
+			return;
+		}
 		int ans = Trans_Data(2);
 		if (ans == 1)
 		{
 			IS_CREATER = 0;
 			AfxMessageBox(_T("加入成功！对局已开始。"));
+			Online_Enabled = false;
 			SetTimer(4, 1000, NULL);
 			//AfxMessageBox("对局开始！");
 			m_Manager.NewGame();
@@ -383,6 +395,7 @@ void CGomokuDlg::OnLButtonUp(UINT nFlags, CPoint point)
 			Trans_Data(1);
 			IS_CREATER = 1;
 			AfxMessageBox(_T("房间创建成功！请等待对手加入房间。"));
+			Online_Enabled = true;
 			KillTimer(1);
 			KillTimer(2);
 			m_bState = false;
@@ -398,17 +411,31 @@ void CGomokuDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	if ((point.x >= 30 && point.y >= 570) && (point.x <= 205 && point.y <= 620))
 	{
+		if (Online_Enabled == true)
+			Trans_Data(2);
 		DestroyWindow();
 		return;
 	}
 	if ((point.x >= 844 && point.y >= 241) && (point.x <= 958 && point.y <= 291))
 	{
+		if (Online_Enabled == true)
+		{
+			KillTimer(3);
+			Trans_Data(2);
+		}
+		Online_Enabled = false;
 		m_Manager.Set_AI_Color(-1);
 		Human_First();
 		return;
 	}
 	if ((point.x >= 844 && point.y >= 314) && (point.x <= 958 && point.y <= 364))
 	{
+		if (Online_Enabled == true)
+		{
+			KillTimer(3);
+			Trans_Data(2);
+		}
+		Online_Enabled = false;
 		m_Manager.Set_AI_Color(1);
 		AI_First();
 		return;
@@ -656,6 +683,7 @@ void CGomokuDlg::OnTimer(UINT_PTR nIDEvent)
 			if (ans == 1)
 			{
 				KillTimer(3);
+				Online_Enabled = false;
 				AfxMessageBox(_T("对局开始！"));
 				m_Manager.NewGame();
 				Invalidate();
